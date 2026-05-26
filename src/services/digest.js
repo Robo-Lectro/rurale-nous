@@ -11,8 +11,6 @@ function getWeekLabel() {
   return monday.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
-const TARGET_WORDS = 1600
-
 async function generate() {
   const apiKey = store.get('groqApiKey')
   if (!apiKey) {

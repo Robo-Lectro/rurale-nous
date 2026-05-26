@@ -24,9 +24,7 @@ export default function ArticleCard({ article }) {
 
   function openArticle() {
     if (article.url) {
-      // Electron ouvre dans le navigateur externe
-      require?.('electron')?.shell?.openExternal(article.url)
-        || window.open(article.url, '_blank')
+      window.api?.openExternal(article.url) || window.open(article.url, '_blank')
     }
   }
 

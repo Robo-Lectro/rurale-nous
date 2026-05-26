@@ -18,6 +18,9 @@ contextBridge.exposeInMainWorld('api', {
   getSettings: () => ipcRenderer.invoke('get-settings'),
   setSettings: (s) => ipcRenderer.invoke('set-settings', s),
 
+  // External links
+  openExternal: (url) => ipcRenderer.invoke('open-external', url),
+
   // Events from main → renderer
   on: (channel, cb) => {
     const allowed = ['scrape-complete', 'digest-ready', 'generate-digest']

@@ -16,22 +16,24 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci
 
-      - name: Upgrade electron-builder
-        run: npm install electron-builder@latest --save-dev --no-audit
-
-      - name: Build Vite (renderer)
-        run: npx vite build
+      - name: Lint
+        run: npm run lint
 
       - name: Build Electron (universal .dmg)
-        run: npx electron-builder --mac --universal
+        run: npm run build:mac
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES: true
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          # Decommenter pour la notarisation Apple (optionnel)
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
