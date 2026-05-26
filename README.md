@@ -2,7 +2,7 @@
 
 Veille municipale du Québec rural — transport collectif, développement des communautés, corrélations RIMQ/UMQ/FMQ.
 
-## Ce que ça fait
+## Ce que ça fait.
 
 - **Collecte automatique** des actualités rurales (RSS + scraping) toutes les heures
 - **Classification** par thème : transport collectif, développement, défis ruraux, bonnes pratiques
