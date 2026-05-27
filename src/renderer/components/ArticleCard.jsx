@@ -14,7 +14,7 @@ const THEME_COLORS = {
 const SOURCE_COLORS = {
   rimq: { bg: 'var(--coral-50)', text: 'var(--coral-600)', border: 'var(--coral-50)' },
   umq: { bg: 'var(--purple-50)', text: 'var(--purple-600)', border: 'var(--purple-50)' },
-  fmq: { bg: 'var(--teal-50)', text: 'var(--teal-600)', border: 'var(--teal-50)' },
+  fqm: { bg: 'var(--teal-50)', text: 'var(--teal-600)', border: 'var(--teal-50)' },
   media: { bg: 'var(--gray-50)', text: 'var(--gray-600)', border: 'var(--gray-50)' },
 }
 

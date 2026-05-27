@@ -12,14 +12,14 @@ function getWeekLabel() {
 }
 
 async function generate() {
-  const apiKey = store.get('groqApiKey')
+  const apiKey = String(store.get('groqApiKey') || '').trim()
   if (!apiKey) {
     return { error: 'Clé API Groq manquante. Configurez-la dans les préférences. Compte gratuit sur console.groq.com' }
   }
 
   const articles = db.getArticles({ limit: 200 })
   if (articles.length === 0) {
-    return { error: 'Aucun article disponible pour générer un résumé.' }
+    return { error: 'Aucun article disponible pour générer un résumé. Lancez d’abord “Actualiser maintenant”.' }
   }
 
   const articlesText = articles
@@ -31,20 +31,46 @@ async function generate() {
 
   const client = new Groq({ apiKey })
 
-  const message = await client.chat.completions.create({
-    model: 'llama-3.3-70b-versatile',
-    max_tokens: 3000,
-    messages: [
-      {
-        role: 'user',
-        content: `Tu es le rédacteur du bulletin hebdomadaire "Rurale-Nous"...
+  let message
+  try {
+    message = await client.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 3000,
+      temperature: 0.35,
+      messages: [
+        {
+          role: 'system',
+          content: [
+            'Tu rédiges Rurale-Nious, une veille stratégique pour les municipalités rurales du Québec.',
+            'Produit un résumé clair, utile et actionnable, lisible en environ 8 minutes.',
+            'Mets en valeur les bonnes pratiques, les liens entre enjeux et solutions, et les références originales.',
+          ].join(' '),
+        },
+        {
+          role: 'user',
+          content: `Prépare un bulletin structuré en français avec ces sections :
+1. Points à retenir
+2. Initiatives et bonnes pratiques
+3. Enjeux ruraux détectés
+4. Corrélations possibles entre problèmes et solutions
+5. Sources et liens à consulter
+
 ARTICLES À ANALYSER :
 ${articlesText}`,
-      },
-    ],
-  })
+        },
+      ],
+    })
+  } catch (err) {
+    return {
+      error: `Groq n’a pas pu générer le résumé: ${err.message || 'erreur inconnue'}`,
+    }
+  }
 
-  const content = message.choices[0].message.content
+  const content = message?.choices?.[0]?.message?.content
+  if (!content) {
+    return { error: 'Groq a répondu sans contenu exploitable. Réessayez dans quelques secondes.' }
+  }
+
   const wordCount = content.split(/\s+/).length
   const readTimeSec = Math.round((wordCount / 200) * 60)
 

@@ -15,7 +15,7 @@ const SOURCE_TYPES = [
   { id: null, label: 'Toutes les sources' },
   { id: 'rimq', label: 'RIMQ' },
   { id: 'umq', label: 'UMQ' },
-  { id: 'fmq', label: 'FMQ' },
+  { id: 'fqm', label: 'FQM' },
   { id: 'media', label: 'Médias' },
 ]
 

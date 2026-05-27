@@ -1,13 +1,13 @@
-# Rurale-Nous 🌿
+# Rurale-Nious 🌿
 
-Veille municipale du Québec rural — transport collectif, développement des communautés, corrélations RIMQ/UMQ/FMQ.
+Veille municipale du Québec rural — transport collectif, développement des communautés, corrélations RIMQ/UMQ/FQM.
 
 ## Ce que ça fait.
 
 - **Collecte automatique** des actualités rurales (RSS + scraping) toutes les heures
 - **Classification** par thème : transport collectif, développement, défis ruraux, bonnes pratiques
 - **Détection des régions** du Québec automatiquement
-- **Croisement** avec les sources officielles : RIMQ, UMQ (Union des municipalités), FMQ (Fédération des municipalités)
+- **Croisement** avec les sources officielles : RIMQ, UMQ (Union des municipalités), FQM (Fédération québécoise des municipalités)
 - **Corrélations** entre enjeux (transport ↔ exode, mutualisation ↔ rétention...)
 - **Résumé 8 minutes** généré par Groq, lisible en une session, avec liens vers toutes les sources
 
@@ -45,7 +45,7 @@ Ouvrez l'app → Préférences → entrez votre clé API Groq pour activer la g�
 |--------|------|-----|
 | RIMQ | Municipal | ✓ |
 | UMQ | Municipal | ✓ |
-| FMQ | Municipal | ✓ |
+| FQM | Municipal | ✓ |
 | Radio-Canada (9 régions) | Média | ✓ |
 | Le Devoir Régions | Média | ✓ |
 

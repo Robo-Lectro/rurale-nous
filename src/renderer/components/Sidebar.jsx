@@ -17,7 +17,7 @@ const THEMES = [
 const SOURCES = [
   { id: 'rimq', label: 'RIMQ', color: 'var(--coral-400)' },
   { id: 'umq', label: 'UMQ', color: 'var(--purple-400)' },
-  { id: 'fmq', label: 'FMQ', color: 'var(--teal-400)' },
+  { id: 'fqm', label: 'FQM', color: 'var(--teal-400)' },
 ]
 
 export default function Sidebar({ activeView, onNavigate, stats, scrapeStatus }) {
@@ -41,7 +41,7 @@ export default function Sidebar({ activeView, onNavigate, stats, scrapeStatus })
       <div style={{ padding: '0 16px 16px', borderBottom: '0.5px solid var(--border)' }}>
         <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: '-0.3px' }}>
           <span style={{ color: 'var(--green-600)' }}>Rurale</span>
-          <span style={{ color: 'var(--text-primary)' }}>-Nous</span>
+          <span style={{ color: 'var(--text-primary)' }}>-Nious</span>
         </div>
         <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>
           Veille municipale QC
@@ -105,9 +105,23 @@ export default function Sidebar({ activeView, onNavigate, stats, scrapeStatus })
 
         {scrapeStatus && (
           <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 6, textAlign: 'center' }}>
-            {scrapeStatus.newArticles > 0
-              ? `+${scrapeStatus.newArticles} nouveaux articles`
-              : 'Aucun nouvel article'}
+            {scrapeStatus.error
+              ? `Erreur: ${scrapeStatus.error}`
+              : scrapeStatus.newArticles > 0
+                ? `+${scrapeStatus.newArticles} nouveaux articles`
+                : 'Aucun nouvel article'}
+            {scrapeStatus.bySource?.length > 0 && (
+              <div style={{ marginTop: 4 }}>
+                {scrapeStatus.bySource
+                  .map(s => `${s.source}: ${s.found}${s.newArticles ? ` (+${s.newArticles})` : ''}`)
+                  .join(' · ')}
+              </div>
+            )}
+            {scrapeStatus.errors?.length > 0 && (
+              <div style={{ marginTop: 4, color: 'var(--coral-600)' }}>
+                {scrapeStatus.errors.length} source{scrapeStatus.errors.length > 1 ? 's' : ''} en erreur
+              </div>
+            )}
           </div>
         )}
 

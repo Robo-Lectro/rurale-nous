@@ -3,23 +3,41 @@ import React, { useState, useEffect } from 'react'
 export function Digest() {
   const [digest, setDigest] = useState(null)
   const [generating, setGenerating] = useState(false)
+  const [status, setStatus] = useState(null)
 
   async function generate() {
     setGenerating(true)
-    const result = await window.api?.generateDigest()
-    if (result && !result.error) setDigest(result)
-    else if (result?.error) alert(result.error)
-    setGenerating(false)
+    setStatus({ type: 'info', text: 'Demande envoyée à Groq. Génération du résumé en cours...' })
+
+    try {
+      const result = await window.api?.generateDigest()
+
+      if (result && !result.error) {
+        setDigest(result)
+        setStatus({ type: 'success', text: 'Résumé généré avec succès.' })
+      } else {
+        setStatus({ type: 'error', text: result?.error || 'Aucune réponse reçue de Groq.' })
+      }
+    } catch (err) {
+      setStatus({ type: 'error', text: err?.message || 'Erreur inattendue pendant la génération.' })
+    } finally {
+      setGenerating(false)
+    }
   }
 
-  const readMin = digest ? Math.round(digest.read_time_s / 60) : 0
+  const readMin = digest ? Math.max(1, Math.round(digest.read_time_s / 60)) : 0
+  const statusColor = status?.type === 'error'
+    ? 'var(--coral-600)'
+    : status?.type === 'success'
+      ? 'var(--green-600)'
+      : 'var(--text-secondary)'
 
   return (
     <div style={{ maxWidth: 760 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 500, letterSpacing: '-0.3px', marginBottom: 4 }}>Résumé 8 minutes</h1>
-          <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>Généré par Groq · actualités rurales du Québec</p>
+          <p style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>Généré par Groq · veille rurale du Québec</p>
         </div>
         <button
           onClick={generate}
@@ -35,6 +53,16 @@ export function Digest() {
         </button>
       </div>
 
+      {status && (
+        <div style={{
+          background: 'var(--surface)', border: '0.5px solid var(--border)',
+          borderRadius: 'var(--radius-md)', padding: '10px 14px',
+          color: statusColor, fontSize: 13, marginBottom: 16,
+        }}>
+          {status.text}
+        </div>
+      )}
+
       {!digest ? (
         <div style={{
           background: 'var(--surface)', border: '0.5px solid var(--border)',
@@ -43,8 +71,8 @@ export function Digest() {
         }}>
           <div style={{ fontSize: 32, marginBottom: 12 }}>📄</div>
           <div style={{ fontSize: 14, marginBottom: 8 }}>Aucun résumé généré</div>
-          <div style={{ fontSize: 12 }}>Cliquez sur "Générer" pour créer votre résumé hebdomadaire.</div>
-          <div style={{ fontSize: 11, marginTop: 8 }}>Nécessite une clé API Groq (Préférences)</div>
+          <div style={{ fontSize: 12 }}>Cliquez sur “Générer” pour créer votre résumé hebdomadaire.</div>
+          <div style={{ fontSize: 11, marginTop: 8 }}>Nécessite une clé API Groq valide dans Préférences.</div>
         </div>
       ) : (
         <div>
@@ -82,7 +110,8 @@ export function Settings() {
   }, [])
 
   async function save() {
-    await window.api?.setSettings({ groqApiKey: apiKey })
+    await window.api?.setSettings({ groqApiKey: apiKey.trim() })
+    setApiKey(apiKey.trim())
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }
@@ -104,6 +133,8 @@ export function Settings() {
             value={apiKey}
             onChange={e => setApiKey(e.target.value)}
             placeholder="gsk_..."
+            autoComplete="off"
+            spellCheck={false}
             style={{
               width: '100%', padding: '9px 12px', fontSize: 13,
               background: 'var(--surface-secondary)', border: '0.5px solid var(--border)',

@@ -135,7 +135,7 @@ async function triggerScrape() {
     mainWindow?.webContents.send('scrape-complete', results)
     if (results.newArticles > 0) {
       new Notification({
-        title: 'Rurale-Nous',
+        title: 'Rurale-Nious',
         body: `${results.newArticles} nouveau${results.newArticles > 1 ? 'x' : ''} article${results.newArticles > 1 ? 's' : ''} collecté${results.newArticles > 1 ? 's' : ''}`,
       }).show()
     }

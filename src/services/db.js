@@ -23,7 +23,7 @@ db.exec(`
     title       TEXT NOT NULL,
     url         TEXT NOT NULL,
     source      TEXT NOT NULL,
-    source_type TEXT DEFAULT 'media',   -- media | rimq | umq | fmq
+    source_type TEXT DEFAULT 'media',   -- media | rimq | umq | fqm
     region      TEXT,
     published_at TEXT,
     fetched_at  TEXT DEFAULT (datetime('now')),
@@ -59,6 +59,8 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_articles_region ON articles(region);
   CREATE INDEX IF NOT EXISTS idx_articles_fetched ON articles(fetched_at);
 `)
+
+db.exec("UPDATE articles SET source_type = 'fqm', source = REPLACE(source, 'FMQ', 'FQM') WHERE source_type = 'fmq'")
 
 // ─── Queries ─────────────────────────────────────────────────────────────────
 
