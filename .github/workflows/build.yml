@@ -3,7 +3,11 @@ name: Build macOS
 on:
   push:
     branches: [main]
+    tags: ['mac-release-*']
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -61,6 +65,30 @@ jobs:
           # APPLE_ID: ${{ secrets.APPLE_ID }}
           # APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: Rename release asset
+        if: startsWith(github.ref, 'refs/tags/mac-release-')
+        shell: bash
+        run: |
+          if [ "${{ matrix.arch }}" = "arm64" ]; then
+            suffix="arm64V2"
+          else
+            suffix="x64V1"
+          fi
+          dmg="$(find dist -maxdepth 1 -name '*.dmg' | head -n 1)"
+          if [ -z "$dmg" ]; then
+            echo "::error title=Missing DMG::No DMG file found in dist"
+            exit 1
+          fi
+          mv "$dmg" "dist/Rurale-Nous-macOS-${suffix}.dmg"
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/mac-release-')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Rurale-Nous macOS ${{ github.ref_name }}
+          files: dist/Rurale-Nous-macOS-*.dmg
+          fail_on_unmatched_files: true
 
       - name: Upload app artifact
         uses: actions/upload-artifact@v4
