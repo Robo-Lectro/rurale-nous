@@ -122,6 +122,8 @@ function getLatestDigest() {
 }
 
 function upsertCorrelations(correlations) {
+  db.prepare('DELETE FROM correlations').run()
+
   const stmt = db.prepare(`
     INSERT INTO correlations (theme_a, theme_b, coefficient, sample_size, region, note)
     VALUES (@theme_a, @theme_b, @coefficient, @sample_size, @region, @note)

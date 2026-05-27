@@ -5,6 +5,7 @@ import Articles from './views/Articles'
 import Correlations from './views/Correlations'
 import Digest from './views/Digest'
 import Settings from './views/Settings'
+import Tutorial from './components/Tutorial'
 
 const VIEWS = {
   dashboard: Dashboard,
@@ -55,6 +56,7 @@ export default function App() {
       <main style={{ flex: 1, overflow: 'auto', padding: '24px 28px' }}>
         <View stats={stats} onStatsChange={loadStats} />
       </main>
+      <Tutorial onNavigate={setView} />
     </div>
   )
 }
